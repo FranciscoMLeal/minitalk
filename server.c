@@ -39,42 +39,21 @@ char	*print_pid(int pid, int pid_len, int pid_len_saved)
 	}
 }
 
-void	*bintodec(char	*sign)
-{
-	int i;
-	int ret;
-	void	*chrval;
-
-	i = 9;
-	while(i--)
-	{
-		ret += (sign[i] - 48) * 2 ^ i;
-	}
-	chrval = &ret;
-	return(chrval);
-}
-
 void server(int signal)
 {
-	static char	sign[8];
+	int pwrvl[8] = {128,64,32,16,8,4,2,1};
 	static	int	i;
-	void *wrt;
+	static int wrt;
 
-	if(signal == SIGUSR1)
-		sign[i] = 0;
 	if(signal == SIGUSR2)
-		sign[i] = 1;
+		wrt += pwrvl[i];
+	//write(1,&sign[i],1);///APAGAR
 	i++;
 	if(i == 8)
 	{
-		wrt = bintodec(sign);
-		write(1,wrt,1);
-		i = 0;
+		write(1,&wrt,1);
+		i = wrt = 0;
 	}
-}
-void	testeapagar(int signal)
-{
-	printf("%s","ITS FICKING WORKING");
 }
 
 int main()
@@ -91,9 +70,8 @@ int main()
 	write(1,"PID:",4);
 	write(1,pid_char,pid_len);
 	write(1, "\n", 1);
-    ///signal(SIGUSR2, server);
-    signal(SIGUSR1, testeapagar);
-	signal(SIGUSR2, testeapagar);
+    signal(SIGUSR1, server);
+	signal(SIGUSR2, server);
 	while (1)
 		pause();	
 }

@@ -26,20 +26,53 @@ int ft_atoi(const char *str)
     return (num);
 }
 
-void    client()
+void    client(int pid, int val)
 {
+    int i = -1;
+    int div = 128;
 
+    while (i++ < 7)
+    {
+        if(val >= div)
+        {
+            val -= div;
+            kill(pid,SIGUSR2);
+        }
+        else
+            kill(pid,SIGUSR1);
+        div = div / 2;
+        usleep(300);
+    }
 }
 
 int main(int argc, char **argv)
 {
     int pid;
-
+    int i;
     if(argc !=3)
         return(write(1,"You can only use 2 arguments",29));
     pid = ft_atoi(argv[1]);
-    kill(pid,SIGUSR1);
-    usleep(100);
-    kill(pid,SIGUSR1);
-    printf("I'M fhere and I already killed before\nmy pid is : %i\n",pid);
+    i = -1;
+    while(argv[2][++i])
+        client(pid, argv[2][i]);
+
+
+    ///Falta criar um conversor de char para binario para enviar a msg
+
+//   kill(pid, SIGUSR2);
+//   usleep(200);
+//   kill(pid, SIGUSR1);
+//   usleep(200);
+//   kill(pid, SIGUSR1);
+//   usleep(200);
+//   kill(pid, SIGUSR1);
+//   usleep(200);
+//   kill(pid, SIGUSR1);
+//   usleep(200);
+//   kill(pid, SIGUSR2);
+//   usleep(200);
+//   kill(pid, SIGUSR2);
+    //usleep(100);
+    //kill(pid, SIGUSR1);
+    //printf("I'M fhere and I already killed before\nmy pid is : %i\n",pid);
 }
