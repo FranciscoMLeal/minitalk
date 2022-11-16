@@ -7,7 +7,7 @@ CLIENT		= client.c
 OBJSCLIENT  = $(CLIENT:.c=.o)
 
 CC			= gcc
-CFLAGS		= -Wall -Werror -Wextra 
+CFLAGS		= 			#FAlta Voltar a por Flags
 RM 			= rm -f
 
 NAME		= minitalk

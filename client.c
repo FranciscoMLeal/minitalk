@@ -1,22 +1,7 @@
+#include <unistd.h>
+#include <stdio.h>
 #include <limits.h>
 #include <signal.h>
-#include <unistd.h>
-
-void	ft_conv(int n, int pid)
-{
-	int i;
-
-    i = 8;
-    while(i--)
-    {
-		if((n % 2) == 1)
-            kill(pid, SIGUSR2);
-		else
-			kill(pid, SIGUSR1);
-		usleep(100);
-        n /= 2;
-	}
-}
 
 int ft_atoi(const char *str)
 {
@@ -41,19 +26,18 @@ int ft_atoi(const char *str)
     return (num);
 }
 
-int main(int argc, char **argv)
+void    client()
 {
-    int i;
-    int pid;
 
-    if(argc != 3)
-        return (write(1, "Wrong number of arguments\n", 26));
-    pid = ft_atoi(argv[1]);
-    if(pid <= 0)
-        return (write(1, "Invalid PID\n", 12));
-    i = -1;
-    while(argv[2][++i])
-        ft_conv(argv[2][i], pid);
 }
 
-/// Create a function that gets PID and sends it in the end of the string
+int main(int argc, char **argv)
+{
+    int pid;
+
+    if(argc !=3)
+        return(write(1,"You can only use 2 arguments",29));
+    pid = ft_atoi(argv[1]);
+    kill(pid,SIGUSR1);
+    printf("I'M fhere and I already killed before\nmy pid is : %i\n",pid);
+}

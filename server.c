@@ -1,45 +1,100 @@
-#include <signal.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h>
 
-void    ft_putnbr(int n)
+int getlen(int pid)
 {
-    if(n > 9)
-        ft_putnbr(n / 10);
-    write(1, &"0123456789"[n % 10], 1);
+	int ret;
+
+	ret = 0;
+	while(pid > 0)
+	{
+		pid = pid/10;
+		ret++;
+	}
+	return(ret);
 }
 
-void	handler(int signal)
+char	*print_pid(int pid, int pid_len, int pid_len_saved)
 {
-	static char	ascii;
-	static int	power;
-	static int	i;
+	char	ret[pid_len];
+	char	*retu;
 
-	if(i == 0)
-		power = 1;
-	if(signal == SIGUSR2)
-		ascii += power;
-	power *= 2;
-	i++;
-	if(i == 8)
+	if(pid <= 0)
 	{
-		write(1, &ascii, 1);
-		i = 0;
-		ascii = 0;
+		write(1,"Something is not right",22);
+		return(NULL);
+	}
+	else
+	{
+		while(pid_len)
+		{
+			ret[pid_len - 1] = (pid % 10) + '0';
+			pid = pid / 10;
+			pid_len--;
+		}
+		retu = &ret[0];
+		return(retu);
 	}
 }
 
-int     main(void)
+void	*bintodec(char	*sign)
 {
-    write(1, "PID: ", 5);
-    ft_putnbr(getpid());
-    write(1, "\n", 1);
-    signal(SIGUSR1, handler);
-    signal(SIGUSR2, handler);
-    while (1)
-        pause();
+	int i;
+	int ret;
+	void	*chrval;
+
+	i = 9;
+	while(i--)
+	{
+		ret += (sign[i] - 48) * 2 ^ i;
+	}
+	chrval = &ret;
+	return(chrval);
 }
 
-/// Create function that separate last numbers as PID for confirmation
-/// Create that sends a confirmation
+void server(int signal)
+{
+	static char	sign[8];
+	static	int	i;
+	void *wrt;
+
+	if(signal == SIGUSR1)
+		sign[i] = 0;
+	if(signal == SIGUSR2)
+		sign[i] = 1;
+	i++;
+	if(i == 8)
+	{
+		wrt = bintodec(sign);
+		write(1,wrt,1);
+		i = 0;
+	}
+}
+void	testeapagar(int signal)
+{
+	printf("%s","ITS FICKING WORKING");
+	write(1,'1',1);
+}
+
+int main()
+{
+	int pid;
+	int pid_len;
+	int	i;
+	char *pid_char;
+
+	i = 0;
+	pid = getpid();
+	pid_len = getlen(pid);
+	pid_char = print_pid(pid,pid_len,pid_len);
+	write(1,"PID:",4);
+	write(1,pid_char,pid_len);
+	write(1, "\n", 1);
+    ///signal(SIGUSR2, server);
+    signal(SIGUSR1, testeapagar);
+	signal(SIGUSR2, testeapagar);
+	while (1)
+		pause();	
+}
