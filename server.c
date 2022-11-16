@@ -75,7 +75,6 @@ void server(int signal)
 void	testeapagar(int signal)
 {
 	printf("%s","ITS FICKING WORKING");
-	write(1,'1',1);
 }
 
 int main()

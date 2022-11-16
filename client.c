@@ -39,5 +39,7 @@ int main(int argc, char **argv)
         return(write(1,"You can only use 2 arguments",29));
     pid = ft_atoi(argv[1]);
     kill(pid,SIGUSR1);
+    usleep(100);
+    kill(pid,SIGUSR1);
     printf("I'M fhere and I already killed before\nmy pid is : %i\n",pid);
 }
